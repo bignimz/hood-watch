@@ -6,6 +6,14 @@ from .serializers import *
 
 # Create your views here.
 
+# Home View
+
+
+def index(request):
+    neighborhoods = Neighborhood.objects.all().order_by('id')
+    return render(request, 'index.html', {'neighborhoods': neighborhoods})
+
+
 @api_view(['GET'])
 def neighborhoodView(request):
     neighborhoods = Neighborhood.objects.all()
@@ -19,6 +27,7 @@ def neighborhoodDetail(request, pk):
     serializer = NeighborhoodSerializer(neighborhoods, many=False)
     return Response(serializer.data)
 
+
 @api_view(['POST'])
 def createNeighborhood(request):
     serializer = NeighborhoodSerializer(data=request.data)
@@ -30,7 +39,8 @@ def createNeighborhood(request):
 @api_view(['PUT'])
 def updateNeighborhood(request, pk):
     neighborhood = Neighborhood.objects.get(pk=pk)
-    serializer = NeighborhoodSerializer(instance=neighborhood, data=request.data)
+    serializer = NeighborhoodSerializer(
+        instance=neighborhood, data=request.data)
     if serializer.is_valid():
         serializer.save()
     return Response(serializer.data)
@@ -41,7 +51,6 @@ def deleteNeighborhood(request, pk):
     neighborhood = Neighborhood.objects.get(pk=pk)
     neighborhood.delete()
     return Response("Neighborhood deleted successfully!")
-
 
 
 # POST VIEWS
@@ -57,6 +66,7 @@ def postDetail(request, pk):
     posts = Post.objects.get(id=pk)
     serializer = PostSerializer(posts, many=False)
     return Response(serializer.data)
+
 
 @api_view(['POST'])
 def createPost(request):
